@@ -10,6 +10,7 @@ public class SynchronizedBuffer<T> {
 
     // BLOCKS-UNTIL: empty
     public void put(T newElem) throws InterruptedException {
+//        System.out.println("Try to put " + newElem);
         synchronized (lock) {
             while (elem != null) {
                 lock.wait();
@@ -39,6 +40,7 @@ class App00_1x0 {
         final SynchronizedBuffer<Character> buffer = new SynchronizedBuffer<>();
         // PRODUCER
         for (char c = 'A'; c <= 'Z'; c++) {
+            //why C,D,E - not come to wait set??? (because one thread is waiting!!!)
             buffer.put(c);
             System.err.println(c + "->");
         }
