@@ -1,5 +1,12 @@
 package com.zhadan.test;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.atomic.AtomicInteger;
+
 /**
  * Created by andrewzhadan on 5/1/14.
  */
@@ -19,18 +26,18 @@ public class Main {
 //        }
 
 //        final StaticTest staticTest = new StaticTest();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                StaticTest.f();
-            }
-        }).start();
+        new Thread(StaticTest::f).start();
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                StaticTest.g();
-            }
-        }).start();
+        new Thread(StaticTest::g).start();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        Future<Object> submit = executorService.submit(() -> "q");
+
+        List<Long> list =new ArrayList<>(10_000_000);
+        list.stream().parallel();
+
+
+        AtomicInteger at = new AtomicInteger(0);
+        at.incrementAndGet();
     }
 }
