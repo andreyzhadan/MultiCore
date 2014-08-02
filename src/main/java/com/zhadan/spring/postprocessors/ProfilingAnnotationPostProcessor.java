@@ -8,8 +8,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,20 +40,17 @@ public class ProfilingAnnotationPostProcessor implements BeanPostProcessor {
         System.out.println("postProcessAfterInitialization " + "ProfilingAnnotationPostProcessor");
         Class beanClass = map.get(beanName);
         if (beanClass != null) {
-            return newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), new InvocationHandler() {
-                @Override
-                public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                    if (controller.isEnabled()) {
-                        System.out.println("Profiling STARTS");
-                        long before = System.nanoTime();
-                        Object retVal = method.invoke(bean, args);
-                        long after = System.nanoTime();
-                        System.out.println("Takes " + (after - before));
-                        System.out.println("Profiling ENDS ");
-                        return retVal;
-                    } else {
-                        return method.invoke(bean, args);
-                    }
+            return newProxyInstance(beanClass.getClassLoader(), beanClass.getInterfaces(), (proxy, method, args) -> {
+                if (controller.isEnabled()) {
+                    System.out.println("Profiling STARTS");
+                    long before = System.nanoTime();
+                    Object retVal = method.invoke(bean, args);
+                    long after = System.nanoTime();
+                    System.out.println("Takes " + (after - before));
+                    System.out.println("Profiling ENDS ");
+                    return retVal;
+                } else {
+                    return method.invoke(bean, args);
                 }
             });
         }

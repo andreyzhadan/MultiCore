@@ -9,6 +9,8 @@
     <bean class="com.zhadan.spring.postprocessors.ProfilingAnnotationPostProcessor"/>
     <bean class="com.zhadan.spring.postprocessors.InjectRandomIntAnnotationPostProcessor"/>
 
+    <bean class="com.zhadan.spring.PostProxyInvokerContextListener"/>
+
     <bean class="com.zhadan.spring.TerminatorQuarter" id="quarter">
         <property name="message" value="I'll be back"/>
     </bean>

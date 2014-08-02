@@ -1,6 +1,7 @@
 package com.zhadan.spring;
 
 import com.zhadan.spring.annotaions.InjectRandomInt;
+import com.zhadan.spring.annotaions.PostProxy;
 import com.zhadan.spring.annotaions.Profiling;
 
 import javax.annotation.PostConstruct;
@@ -25,7 +26,9 @@ public class TerminatorQuarter implements Quarter {
     }
 
     @Override
+    @PostProxy
     public void sayHello() {
+        System.out.println("Phase 3");
         for (int i = 0; i < repeatTimes; i++) {
             System.out.println(getMessage());
         }
