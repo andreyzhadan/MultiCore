@@ -6,25 +6,43 @@ import jsr166y.ForkJoinPool;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.lang.Character.getNumericValue;
 import static java.lang.System.arraycopy;
 import static java.lang.System.currentTimeMillis;
 import static java.util.Arrays.asList;
 import static java.util.Spliterator.ORDERED;
+import static java.util.stream.Stream.of;
 
 /**
  * Created by azhadan on 8/8/14.
  */
 public class Main {
-    public static final int LENGTH = 30;
 
     public static void main(String[] args) {
-        long start = System.currentTimeMillis();
-        Stream<String> stream = Stream.of("0", "1").parallel();
-        for (int i = 1; i < LENGTH; i++) {
-            stream = stream.flatMap(x -> Stream.of(x + "0", x + "1"));
+        List<Integer> coins = new ArrayList<>(Arrays.asList(1, 3, 5));
+        Stream<String> stream = of("0", "1");
+        for (int i = 1; i < coins.size(); i++) {
+            stream = stream.flatMap(x -> of(x + "0", x + "1"));
         }
-        long middle = System.currentTimeMillis();
-//        System.out.println("Stream is parallel " + stream.isParallel());
+        Set<Integer> sums = new TreeSet<>();
+
+        stream.forEach(seq -> {
+            int sum = 0;
+            for (int i = 0; i < seq.length(); i++) {
+                sum = sum + (getNumericValue(seq.charAt(i))) * coins.get(i);
+            }
+            sums.add(sum);
+            System.out.println("Seq " + seq + " sum " + sum);
+        });
+        System.out.println(sums);
+        int elem = 0;
+        while (true) {
+            if (!sums.contains(elem)) {
+                System.out.println("Not found " + elem);
+                break;
+            }
+            elem++;
+        }
 
 //        Iterator<String> iterator = stream.iterator();
 //        while (iterator.hasNext()) {
@@ -39,11 +57,16 @@ public class Main {
 //        } while (spliterator.tryAdvance(System.out::println));
 //        spliterator.tryAdvance(System.out::println);
 
-//        stream.forEach(System.out::println);
 //        System.out.println(stream.findAny().get());
 
-        long end = System.currentTimeMillis();
-        System.out.println("Intermediate ops " + (middle - start) + " Terminal ops " + (end - middle));
+//        Set<Integer> sums = new TreeSet<>();
+//        sums.addAll(coins);
+//        for (int i = 0; i < coins.size(); i++) {
+//
+//        }
+
+//        long end = System.currentTimeMillis();
+//        System.out.println("Intermediate ops " + (middle - start) + " Terminal ops " + (end - middle));
 
 
 //        spliteratorCharacteristics();
